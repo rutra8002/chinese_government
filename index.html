@@ -48,63 +48,67 @@
 
 <div id="app" class="max-w-md mx-auto bg-white p-8 rounded-md shadow-md transition">
 
-    <!-- 用户列表 -->
-    <div class="mb-8">
-        <h2 class="text-2xl font-semibold mb-4">用户</h2>
-        <ul id="user-list" class="grid gap-2">
-            <!-- 用户项目将在此处动态添加 -->
-        </ul>
+    <!-- Language Selection Dropdown -->
+<div class="mb-4">
+    <label for="languageSelect" class="block text-sm font-medium text-gray-700">选择语言:</label>
+    <select id="languageSelect" class="mt-1 p-2 border rounded-md w-full">
+        <option value="zh-CN">中文</option>
+        <option value="en-US">English</option>
+    </select>
+</div>
+
+<!-- 用户列表 -->
+<div class="mb-8">
+    <h2 class="text-2xl font-semibold mb-4" id="userHeader">用户</h2>
+    <ul id="user-list" class="grid gap-2">
+        <!-- 用户项目将在此处动态添加 -->
+    </ul>
+</div>
+
+<!-- 管理员控件 -->
+<div class="mt-8">
+    <h2 class="text-2xl font-semibold mb-4" id="adminHeader">管理员控件</h2>
+
+    <!-- 选择用户下拉列表 -->
+    <div class="mb-4">
+        <label for="userSelect" class="block text-sm font-medium text-gray-700" id="selectUserLabel">选择用户:</label>
+        <select id="userSelect" class="mt-1 p-2 border rounded-md w-full">
+            <!-- 用户选项将在此处动态添加 -->
+        </select>
     </div>
 
-    <!-- 管理员控件 -->
-    <div class="mt-8">
-        <h2 class="text-2xl font-semibold mb-4">管理员控件</h2>
-
-        <!-- 选择用户下拉列表 -->
-        <div class="mb-4">
-            <label for="userSelect" class="block text-sm font-medium text-gray-700">选择用户:</label>
-            <select id="userSelect" class="mt-1 p-2 border rounded-md w-full">
-                <!-- 用户选项将在此处动态添加 -->
-            </select>
+    <!-- 添加用户表单 -->
+    <div class="mb-4 grid grid-cols-2 gap-4">
+        <div class="flex items-center">
+            <label for="newUsername" class="block text-sm font-medium text-gray-700 mr-2" id="newUserLabel">新用户:</label>
+            <input type="text" id="newUsername" class="p-2 border rounded-l-md w-full">
         </div>
-
-
-        <!-- 添加用户表单（移到新行） -->
-        <div class="mb-4 grid grid-cols-2 gap-4">
-            <div class="flex items-center">
-                <label for="newUsername" class="block text-sm font-medium text-gray-700 mr-2">新用户:</label>
-                <input type="text" id="newUsername" class="p-2 border rounded-l-md w-full">
-            </div>
-            <div class="button-grid">
-                <button onclick="addUser()" class="px-4 py-2 rounded-r-md">添加用户</button>
-            </div>
+        <div class="button-grid">
+            <button onclick="addUser()" class="px-4 py-2 rounded-r-md" id="addUserButton">添加用户</button>
         </div>
-        
-        <!-- 删除用户控件 -->
-        <div class="mb-4 button-grid">
-            <button onclick="removeUser()" class="px-4 py-2 rounded-md">删除用户</button>
+    </div>
+
+    <!-- 删除用户控件 -->
+    <div class="mb-4 button-grid">
+        <button onclick="removeUser()" class="px-4 py-2 rounded-md" id="removeUserButton">删除用户</button>
+    </div>
+
+    <!-- 添加/删除社会信用控件 -->
+    <div class="mb-4 grid grid-cols-2 gap-4">
+        <div class="flex items-center">
+            <label for="socialCreditAmount" class="block text-sm font-medium text-gray-700 mr-2" id="socialCreditLabel">金额:</label>
+            <input type="number" id="socialCreditAmount" class="p-2 border rounded-l-md w-full" min="1">
         </div>
-        
-        <!-- 添加/删除社会信用控件 -->
-        <div class="mb-4 grid grid-cols-2 gap-4">
-            <div class="flex items-center">
-                <label for="socialCreditAmount" class="block text-sm font-medium text-gray-700 mr-2">金额:</label>
-                <input type="number" id="socialCreditAmount" class="p-2 border rounded-l-md w-full" min="1">
-            </div>
-            <div class="button-grid">
-                <button onclick="addSocialCredit()" class="px-4 py-2 rounded-md">添加社会信用</button>
-                <button onclick="removeSocialCredit()" class="px-4 py-2 rounded-md">删除社会信用</button>
-            </div>
+        <div class="button-grid">
+            <button onclick="addSocialCredit()" class="px-4 py-2 rounded-md" id="addCreditButton">添加社会信用</button>
+            <button onclick="removeSocialCredit()" class="px-4 py-2 rounded-md" id="removeCreditButton">删除社会信用</button>
         </div>
+    </div>
 
-        <!-- 行动原因 -->
-        <div class="mb-4">
-            <label for="actionReason" class="block text-sm font-medium text-gray-700">行动原因:</label>
-            <input type="text" id="actionReason" class="mt-1 p-2 border rounded-md w-full">
-        </div>
-
-
-
+    <!-- 行动原因 -->
+    <div class="mb-4">
+        <label for="actionReason" class="block text-sm font-medium text-gray-700" id="actionReasonLabel">行动原因:</label>
+        <input type="text" id="actionReason" class="mt-1 p-2 border rounded-md w-full">
     </div>
 </div>
 
@@ -223,6 +227,38 @@
         console.log(`用户: ${username}, 金额: ${amount}, 原因: ${reason}`);
         // 根据您的要求，可以自定义此记录机制
     }
+    // Language Change Event Listener
+    const languageSelect = document.getElementById('languageSelect');
+        languageSelect.addEventListener('change', function () {
+            const selectedLanguage = languageSelect.value;
+            if (selectedLanguage === 'en-US') {
+                // Update content for English language
+                document.title = 'Chinese Government';
+                document.getElementById('userHeader').textContent = 'Users';
+                document.getElementById('adminHeader').textContent = 'Admin Controls';
+                document.getElementById('selectUserLabel').textContent = 'Select User:';
+                document.getElementById('newUserLabel').textContent = 'New User:';
+                document.getElementById('addUserButton').textContent = 'Add User';
+                document.getElementById('removeUserButton').textContent = 'Remove User';
+                document.getElementById('socialCreditLabel').textContent = 'Amount:';
+                document.getElementById('addCreditButton').textContent = 'Add Social Credit';
+                document.getElementById('removeCreditButton').textContent = 'Remove Social Credit';
+                document.getElementById('actionReasonLabel').textContent = 'Action Reason';
+            } else {
+                // Reset content for Chinese language
+                document.title = '中国应用';
+                document.getElementById('userHeader').textContent = '用户';
+                document.getElementById('adminHeader').textContent = '管理员控件';
+                document.getElementById('selectUserLabel').textContent = '选择用户:';
+                document.getElementById('newUserLabel').textContent = '新用户:';
+                document.getElementById('addUserButton').textContent = '添加用户';
+                document.getElementById('removeUserButton').textContent = '删除用户';
+                document.getElementById('socialCreditLabel').textContent = '金额:';
+                document.getElementById('addCreditButton').textContent = '添加社会信用';
+                document.getElementById('removeCreditButton').textContent = '删除社会信用';
+                document.getElementById('actionReasonLabel').textContent = '行动原因:';
+            }
+        });
 
     // 初始渲染
     renderUserList();
