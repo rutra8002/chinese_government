@@ -66,6 +66,23 @@
             </select>
         </div>
 
+        <!-- Remove User Controls -->
+        <div class="mb-4 button-grid">
+            <button onclick="removeUser()" class="px-4 py-2 rounded-md">Remove User</button>
+        </div>
+
+        <!-- Add User Form (moved to a new row) -->
+        <div class="mb-4 grid grid-cols-2 gap-4">
+            <div class="flex items-center">
+                <label for="newUsername" class="block text-sm font-medium text-gray-700 mr-2">New User:</label>
+                <input type="text" id="newUsername" class="p-2 border rounded-l-md w-full">
+            </div>
+            <div class="button-grid">
+                <button onclick="addUser()" class="px-4 py-2 rounded-r-md">Add User</button>
+            </div>
+        </div>
+
+
         <!-- Add/Remove Social Credit Controls -->
         <div class="mb-4 grid grid-cols-2 gap-4">
             <div class="flex items-center">
@@ -84,21 +101,8 @@
             <input type="text" id="actionReason" class="mt-1 p-2 border rounded-md w-full">
         </div>
 
-        <!-- Add User Form (moved to a new row) -->
-        <div class="mb-4 grid grid-cols-2 gap-4">
-            <div class="flex items-center">
-                <label for="newUsername" class="block text-sm font-medium text-gray-700 mr-2">New User:</label>
-                <input type="text" id="newUsername" class="p-2 border rounded-l-md w-full">
-            </div>
-            <div class="button-grid">
-                <button onclick="addUser()" class="px-4 py-2 rounded-r-md">Add User</button>
-            </div>
-        </div>
 
-        <!-- Remove User Controls -->
-        <div class="mb-4 button-grid">
-            <button onclick="removeUser()" class="px-4 py-2 rounded-md">Remove User</button>
-        </div>
+
     </div>
 </div>
 
