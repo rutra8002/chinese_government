@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+    <title>Chinese App</title>
+    <style>
+        body {
+            background-color: #540d0d; /* Light gray background color */
+        }
+
+        #app {
+            background-color: #ef4444; /* Red background color */
+            color: #000000; /* White text color */
+        }
+
+        #user-list li {
+            background-color: #f59e0b; /* Amber user item background */
+        }
+
+        input,
+        select,
+        button {
+            background-color: #f59e0b; /* Amber input, select, and button background */
+            color: #000000; /* White text color for input, select, and button */
+        }
+
+        /* Smooth transitions */
+        .transition {
+            transition-property: all;
+            transition-duration: 300ms;
+        }
+
+        /* Organized button grid */
+        .button-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+        }
+    </style>
+</head>
+
+<body class="p-4">
+
+<div id="app" class="max-w-md mx-auto bg-white p-8 rounded-md shadow-md transition">
+
+    <!-- User List -->
+    <div class="mb-8">
+        <h2 class="text-2xl font-semibold mb-4">Users</h2>
+        <ul id="user-list" class="grid gap-2">
+            <!-- User items will be dynamically added here -->
+        </ul>
+    </div>
+
+    <!-- Admin Controls -->
+    <div class="mt-8">
+        <h2 class="text-2xl font-semibold mb-4">Admin Controls</h2>
+
+        <!-- Select User Dropdown -->
+        <div class="mb-4">
+            <label for="userSelect" class="block text-sm font-medium text-gray-700">Select User:</label>
+            <select id="userSelect" class="mt-1 p-2 border rounded-md w-full">
+                <!-- User options will be dynamically added here -->
+            </select>
+        </div>
+
+        <!-- Add/Remove Social Credit Controls -->
+        <div class="mb-4 grid grid-cols-2 gap-4">
+            <div class="flex items-center">
+                <label for="socialCreditAmount" class="block text-sm font-medium text-gray-700 mr-2">Amount:</label>
+                <input type="number" id="socialCreditAmount" class="p-2 border rounded-l-md w-full" min="1">
+            </div>
+            <div class="button-grid">
+                <button onclick="addSocialCredit()" class="px-4 py-2 rounded-md">Add Social Credit</button>
+                <button onclick="removeSocialCredit()" class="px-4 py-2 rounded-md">Remove Social Credit</button>
+            </div>
+        </div>
+
+        <!-- Reason for Action -->
+        <div class="mb-4">
+            <label for="actionReason" class="block text-sm font-medium text-gray-700">Reason for Action:</label>
+            <input type="text" id="actionReason" class="mt-1 p-2 border rounded-md w-full">
+        </div>
+
+        <!-- Add User Form (moved to a new row) -->
+        <div class="mb-4 grid grid-cols-2 gap-4">
+            <div class="flex items-center">
+                <label for="newUsername" class="block text-sm font-medium text-gray-700 mr-2">New User:</label>
+                <input type="text" id="newUsername" class="p-2 border rounded-l-md w-full">
+            </div>
+            <div class="button-grid">
+                <button onclick="addUser()" class="px-4 py-2 rounded-r-md">Add User</button>
+            </div>
+        </div>
+
+        <!-- Remove User Controls -->
+        <div class="mb-4 button-grid">
+            <button onclick="removeUser()" class="px-4 py-2 rounded-md">Remove User</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Dummy data for initial users
+    const users = [
+        { id: 1, username: 'user1', socialCredit: 1000 },
+        { id: 2, username: 'user2', socialCredit: 1000 },
+        // Add more users as needed
+    ];
+
+    // Function to render the user list
+    function renderUserList() {
+        const userList = document.getElementById('user-list');
+        userList.innerHTML = '';
+
+        users.forEach(user => {
+            const listItem = document.createElement('li');
+            listItem.classList.add('bg-gray-200', 'p-2', 'rounded-md');
+            listItem.textContent = `${user.username} - Social Credit: ${user.socialCredit}`;
+            userList.appendChild(listItem);
+        });
+    }
+
+    // Function to render the user dropdown
+    function renderUserDropdown() {
+        const userSelect = document.getElementById('userSelect');
+        userSelect.innerHTML = '';
+
+        users.forEach(user => {
+            const option = document.createElement('option');
+            option.value = user.id;
+            option.textContent = user.username;
+            userSelect.appendChild(option);
+        });
+    }
+
+    // Function to add social credit
+    function addSocialCredit() {
+        const userSelect = document.getElementById('userSelect');
+        const userId = parseInt(userSelect.value);
+        const amountInput = document.getElementById('socialCreditAmount');
+        const amount = parseInt(amountInput.value);
+        const reasonInput = document.getElementById('actionReason');
+        const reason = reasonInput.value.trim();
+
+        const user = users.find(u => u.id === userId);
+        if (user && !isNaN(amount) && amount > 0 && reason !== '') {
+            user.socialCredit += amount;
+            renderUserList();
+            logAction(user.username, amount, reason);
+        } else {
+            alert('Invalid input or user not found');
+        }
+    }
+
+    // Function to remove social credit
+    function removeSocialCredit() {
+        const userSelect = document.getElementById('userSelect');
+        const userId = parseInt(userSelect.value);
+        const amountInput = document.getElementById('socialCreditAmount');
+        const amount = parseInt(amountInput.value);
+        const reasonInput = document.getElementById('actionReason');
+        const reason = reasonInput.value.trim();
+
+        const user = users.find(u => u.id === userId);
+        if (user && !isNaN(amount) && amount > 0 && user.socialCredit >= amount && reason !== '') {
+            user.socialCredit -= amount;
+            renderUserList();
+            logAction(user.username, -amount, reason);
+        } else {
+            alert('Invalid input or insufficient social credit');
+        }
+    }
+
+    // Function to add a new user
+    function addUser() {
+        const newUsernameInput = document.getElementById('newUsername');
+        const newUsername = newUsernameInput.value.trim();
+
+        if (newUsername !== '') {
+            const newUser = {
+                id: users.length + 1,
+                username: newUsername,
+                socialCredit: 1000, // Set default social credit to 1000
+            };
+
+            users.push(newUser);
+            renderUserList();
+            renderUserDropdown();
+
+            // Clear the input field
+            newUsernameInput.value = '';
+        } else {
+            alert('Please enter a valid username');
+        }
+    }
+
+    // Function to remove a user
+    function removeUser() {
+        const userSelect = document.getElementById('userSelect');
+        const userId = parseInt(userSelect.value);
+
+        const userIndex = users.findIndex(u => u.id === userId);
+        if (userIndex !== -1) {
+            users.splice(userIndex, 1);
+            renderUserList();
+            renderUserDropdown();
+        } else {
+            alert('User not found');
+        }
+    }
+
+    // Function to log actions (reasons for adding or removing social credit)
+    function logAction(username, amount, reason) {
+        console.log(`User: ${username}, Amount: ${amount}, Reason: ${reason}`);
+        // You can customize this logging mechanism based on your requirements
+    }
+
+    // Initial render
+    renderUserList();
+    renderUserDropdown();
+</script>
+
+</body>
+
+</html>
